@@ -207,6 +207,14 @@
     <Compile Include="Migrations\201806271847585_OverrideConventionsForCoopsGamesAndGenres.Designer.cs">
       <DependentUpon>201806271847585_OverrideConventionsForCoopsGamesAndGenres.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201806271859460_PopulateGamesAndGenresTable.cs" />
+    <Compile Include="Migrations\201806271859460_PopulateGamesAndGenresTable.Designer.cs">
+      <DependentUpon>201806271859460_PopulateGamesAndGenresTable.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201806271921450_PopulateGamesTable.cs" />
+    <Compile Include="Migrations\201806271921450_PopulateGamesTable.Designer.cs">
+      <DependentUpon>201806271921450_PopulateGamesTable.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\ApplicationDbContext.cs" />
@@ -301,6 +309,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201806271847585_OverrideConventionsForCoopsGamesAndGenres.resx">
       <DependentUpon>201806271847585_OverrideConventionsForCoopsGamesAndGenres.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201806271859460_PopulateGamesAndGenresTable.resx">
+      <DependentUpon>201806271859460_PopulateGamesAndGenresTable.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201806271921450_PopulateGamesTable.resx">
+      <DependentUpon>201806271921450_PopulateGamesTable.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
