@@ -199,9 +199,21 @@
     <Compile Include="Migrations\201806271829038_InitialModel.Designer.cs">
       <DependentUpon>201806271829038_InitialModel.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201806271837362_CreateCoopTable.cs" />
+    <Compile Include="Migrations\201806271837362_CreateCoopTable.Designer.cs">
+      <DependentUpon>201806271837362_CreateCoopTable.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201806271847585_OverrideConventionsForCoopsGamesAndGenres.cs" />
+    <Compile Include="Migrations\201806271847585_OverrideConventionsForCoopsGamesAndGenres.Designer.cs">
+      <DependentUpon>201806271847585_OverrideConventionsForCoopsGamesAndGenres.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
-    <Compile Include="Models\IdentityModels.cs" />
+    <Compile Include="Models\ApplicationDbContext.cs" />
+    <Compile Include="Models\Coop.cs" />
+    <Compile Include="Models\Game.cs" />
+    <Compile Include="Models\Genre.cs" />
+    <Compile Include="Models\ApplicationUser.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
@@ -283,6 +295,12 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201806271829038_InitialModel.resx">
       <DependentUpon>201806271829038_InitialModel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201806271837362_CreateCoopTable.resx">
+      <DependentUpon>201806271837362_CreateCoopTable.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201806271847585_OverrideConventionsForCoopsGamesAndGenres.resx">
+      <DependentUpon>201806271847585_OverrideConventionsForCoopsGamesAndGenres.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
