@@ -59,17 +59,17 @@ span.field-validation-error {
 	border-color: #FF4342;
 }
 
-	.navbar-inverse .navbar-nav > li > a {
-		color: #FFF;
-	}
+.navbar-inverse .navbar-nav > li > a {
+	color: #FFF;
+}
 
-	.navbar-inverse .navbar-brand {
-		color: #FFF;
-	}
+.navbar-inverse .navbar-brand {
+	color: #FFF;
+}
 
-	.navbar-inverse .navbar-nav > .open > a, .navbar-inverse .navbar-nav > .open > a:hover, .navbar-inverse .navbar-nav > .open > a:focus {
-		background-color: rgba(205, 40, 39, 0.55);
-	}
+.navbar-inverse .navbar-nav > .open > a, .navbar-inverse .navbar-nav > .open > a:hover, .navbar-inverse .navbar-nav > .open > a:focus {
+	background-color: rgba(205, 40, 39, 0.55);
+}
 
 .dropdown-menu {
 	box-shadow: none;

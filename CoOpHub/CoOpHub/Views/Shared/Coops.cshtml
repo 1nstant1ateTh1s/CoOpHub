@@ -33,7 +33,7 @@
 				</span>
 				@if (Model.ShowActions)
 				{
-					@*<button class="btn btn-default btn-sm pull-right js-toggle-attendance" data-coop-id="@coop.Id">Going ?</button>*@
+					<button class="btn btn-default btn-sm pull-right js-toggle-attendance" data-coop-id="@coop.Id">Going ?</button>
 				}
 
 			</div>
@@ -43,14 +43,14 @@
 
 @section scripts
 {
-	@*<script>
+	<script>
 		$(document).ready(function () {
-			// subscribe to gig click event
+			// subscribe to coop click event
 			$(".js-toggle-attendance").click(function (e) {
 				var button = $(e.target);
 
 				// Make Ajax call to api
-				$.post("/api/attendances", { gigId: button.attr("data-gig-id") })
+				$.post("/api/attendances", { coopId: button.attr("data-coop-id") })
 					.done(function () {
 						// Success callback - when api call done, update button look
 						button
@@ -64,7 +64,7 @@
 					});
 			});
 
-			// follow artist click event
+			// follow host click event
 			$(".js-toggle-follow").click(function (e) {
 				var button = $(e.target);
 
@@ -81,5 +81,5 @@
 
 			});
 		});
-	</script>*@
+	</script>
 }
