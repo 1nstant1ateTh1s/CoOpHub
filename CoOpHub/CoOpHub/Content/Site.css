@@ -1,24 +1,183 @@
 ﻿body {
-    padding-top: 50px;
-    padding-bottom: 20px;
+	padding-top: 90px;
+	padding-bottom: 20px;
 }
 
 /* Set padding to keep content from hitting the edges */
 .body-content {
-    padding-left: 15px;
-    padding-right: 15px;
+	padding-left: 15px;
+	padding-right: 15px;
 }
 
 /* Override the default bootstrap behavior where horizontal description lists 
    will truncate terms that are too long to fit in the left column 
 */
 .dl-horizontal dt {
-    white-space: normal;
+	white-space: normal;
 }
 
 /* Set width on the form input elements since they're 100% wide by default */
 input,
 select,
 textarea {
-    max-width: 280px;
+	max-width: 280px;
+}
+
+span.field-validation-error {
+	color: red;
+	font-weight: bold;
+}
+
+.voffset {
+	margin-top: 2px;
+}
+
+.voffset1 {
+	margin-top: 5px;
+}
+
+.voffset2 {
+	margin-top: 10px;
+}
+
+.voffset3 {
+	margin-top: 20px;
+}
+
+.voffset4 {
+	margin-top: 40px;
+}
+
+.voffset5 {
+	margin-top: 80px;
+}
+
+/* Bootstrap Overrides */
+
+.navbar-inverse {
+	background-color: #FF4342;
+	border-color: #FF4342;
+}
+
+	.navbar-inverse .navbar-nav > li > a {
+		color: #FFF;
+	}
+
+	.navbar-inverse .navbar-brand {
+		color: #FFF;
+	}
+
+	.navbar-inverse .navbar-nav > .open > a, .navbar-inverse .navbar-nav > .open > a:hover, .navbar-inverse .navbar-nav > .open > a:focus {
+		background-color: rgba(205, 40, 39, 0.55);
+	}
+
+.dropdown-menu {
+	box-shadow: none;
+	-webkit-box-shador: none; /* browser compatibility property (for older versions of Chrome) */
+}
+
+.navbar-inverse .navbar-nav > .dropdown > a .caret {
+	border-top-color: #fff;
+	border-bottom-color: #fff;
+}
+
+.navbar-brand {
+	font-weight: 700;
+}
+
+body {
+	font-size: 17px;
+}
+
+body,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.h1,
+.h2,
+.h3,
+.h4,
+.h5,
+.h6 {
+	font-family: Lato, "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+.form-group {
+	margin-bottom: 20px;
+}
+
+.form-control {
+	font-size: 17px;
+	padding: 7px 15px;
+	-ms-border-radius: 9px; /* browser compatibility property */
+	border-radius: 9px;
+}
+
+.form-control:focus {
+	border-color: #2196F3;
+	box-shadow: none;
+	-webkit-box-shadow: none; /* browser compatibility property (for older versions of Chrome) */
+}
+
+.btn {
+	/*font-size: 17px;
+	padding: 7px 20px;*/
+	-ms-border-radius: 9px; /* browser compatibility property */
+	border-radius: 9px;
+}
+
+/* Page-level styles */
+
+.coops {
+	list-style: none;
+}
+
+.coops > li {
+	position: relative;
+	margin-bottom: 30px;
+}
+
+.coops > li .date {
+	background: red;
+	color: white;
+	text-align: center;
+	width: 60px;
+	-ms-border-radius: 8px;
+	border-radius: 8px;
+}
+
+.coops > li .date .month {
+	text-transform: uppercase;
+	font-size: 14px;
+	font-weight: bold;
+	padding: 2px 6px;
+}
+
+.coops > li .date .day {
+	background: #f7f7f7;
+	color: #333;
+	font-size: 20px;
+	padding: 6px 12px;
+}
+
+.coops > li .details {
+	position: absolute;
+	top: 0px;
+	left: 70px;
+}
+
+.coops > li .details .host {
+	font-weight: bold;
+	display: block;
+}
+
+.coops > li .details .game {
+	font-size: 15px;
+}
+
+.coops > li .details .genre {
+	font-size: 15px;
 }

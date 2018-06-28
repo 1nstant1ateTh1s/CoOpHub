@@ -7,8 +7,10 @@ namespace CoOpHub.Models
 	{
 		public int Id { get; set; }
 
-		[Required]
 		public ApplicationUser Host { get; set; }
+
+		[Required]
+		public string HostId { get; set; }		/* "navigation" property */
 
 		public DateTime DateTime { get; set; }
 
@@ -16,7 +18,9 @@ namespace CoOpHub.Models
 		[StringLength(255)]
 		public string Venue { get; set; }
 
-		[Required]
 		public Game Game { get; set; }
+
+		[Required]
+		public int GameId { get; set; }			/* "navigation" property */
 	}
 }
