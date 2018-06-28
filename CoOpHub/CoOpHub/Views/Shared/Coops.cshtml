@@ -20,10 +20,10 @@
 			<div class="details">
 				<span class="host">
 					@coop.Host.Name
-					@*@if (Model.ShowActions)
+					@if (Model.ShowActions)
 					{
-						<button class="btn btn-link btn-sm js-toggle-follow" data-user-id="@coop.ArtistId">Follow</button>
-					}*@
+						<button class="btn btn-link btn-sm js-toggle-follow" data-user-id="@coop.HostId">Follow</button>
+					}
 				</span>
 				<span class="game">
 					@coop.Game.Name

@@ -1,6 +1,7 @@
 ﻿using CoOpHub.Models;
 using CoOpHub.ViewModels;
 using Microsoft.AspNet.Identity;
+using System.Data.Entity;
 using System.Linq;
 using System.Web.Mvc;
 
@@ -52,6 +53,30 @@ namespace CoOpHub.Controllers
 			_context.SaveChanges();
 
 			return RedirectToAction("Index", "Home");
+		}
+
+		[Authorize]
+		public ActionResult Attending()
+		{
+			// Get list of co-op sessions user is attending
+			var userId = User.Identity.GetUserId();
+			var coops = _context.Attendances
+				.Where(a => a.AttendeeId == userId)
+				.Select(a => a.Coop)
+				.Include(g => g.Host)   // include the related "Host" object
+				.Include(g => g.Game)	// include the related "Game" object
+				.Include(g => g.Game.Genre)     // include the related "Genre" object
+				.ToList();
+
+			// Build view model
+			var viewModel = new CoopsViewModel()
+			{
+				UpcomingCoops = coops,
+				ShowActions = User.Identity.IsAuthenticated,
+				Heading = "Co-op sessions I'm Attending"
+			};
+
+			return View("Coops", viewModel);
 		}
 	}
 }

@@ -9,6 +9,7 @@ namespace CoOpHub.Models
 		public DbSet<Game> Games { get; set; }
 		public DbSet<Genre> Genres { get; set; }
 		public DbSet<Attendance> Attendances { get; set; }
+		public DbSet<Following> Followings { get; set; }
 
 		public ApplicationDbContext()
 			: base("DefaultConnection", throwIfV1Schema: false)
@@ -26,6 +27,18 @@ namespace CoOpHub.Models
 			modelBuilder.Entity<Attendance>()
 				.HasRequired(a => a.Coop)
 				.WithMany()
+				.WillCascadeOnDelete(false);
+
+			// Fluent API - turn off cascade delete between Followers & Followees
+			modelBuilder.Entity<ApplicationUser>()
+				.HasMany(u => u.Followers)
+				.WithRequired(f => f.Followee)
+				.WillCascadeOnDelete(false);
+
+			// Fluent API - turn off cascade delete between Followees & Followers
+			modelBuilder.Entity<ApplicationUser>()
+				.HasMany(u => u.Followees)
+				.WithRequired(f => f.Follower)
 				.WillCascadeOnDelete(false);
 
 			base.OnModelCreating(modelBuilder);
