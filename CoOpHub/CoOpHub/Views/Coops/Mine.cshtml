@@ -26,6 +26,12 @@
 				<span class="genre">
 					@coop.Game.Genre.Name
 				</span>
+				<div class="actions">
+					<a href="@Url.Action("Edit", "Coops", new { id = coop.Id })">
+						Edit
+					</a>
+				</div>
+
 			</div>
 		</li>
 	}

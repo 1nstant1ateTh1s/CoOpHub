@@ -1,14 +1,17 @@
 ﻿@model CoOpHub.ViewModels.CoopFormViewModel
 
 @{
-	ViewBag.Title = "Create";
+	ViewBag.Title = Model.Heading;
 }
 
-<h2>Add a Co-op Session</h2>
-@using (Html.BeginForm("Create", "Coops"))
+<h2>@Model.Heading</h2>
+@using (Html.BeginForm(Model.Action, "Coops"))
 {
 	// Protect against CSRF attacks
 	@Html.AntiForgeryToken()
+
+	// Hidden fields
+	@Html.HiddenFor(m => m.Id)
 
 	<p class="alert alert-info">All fields are <strong>required</strong>.</p>
 
@@ -37,7 +40,7 @@
 		@Html.DisplayFor(m => m.Game.Genre)
 	</div>*@
 
-	<button type="submit" class="btn btn-primary">Save</button>
+	<button type="submit" class="btn btn-primary btn-lg">Save</button>
 }
 
 @section scripts

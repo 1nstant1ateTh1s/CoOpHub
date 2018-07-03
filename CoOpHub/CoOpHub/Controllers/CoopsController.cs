@@ -22,10 +22,11 @@ namespace CoOpHub.Controllers
 		{
 			var viewModel = new CoopFormViewModel
 			{
+				Heading = "Add a Co-op Session",
 				Games = _context.Games.ToList()
 			};
 
-			return View(viewModel);
+			return View("CoopForm", viewModel);
 		}
 
 		[Authorize]
@@ -39,7 +40,7 @@ namespace CoOpHub.Controllers
 				// Set the Games property of view model
 				viewModel.Games = _context.Games.ToList();
 
-				return View("Create", viewModel);
+				return View("CoopForm", viewModel);
 			}
 
 			var coop = new Coop
@@ -51,6 +52,55 @@ namespace CoOpHub.Controllers
 			};
 
 			_context.Coops.Add(coop);
+			_context.SaveChanges();
+
+			return RedirectToAction("Mine", "Coops");
+		}
+
+		[Authorize]
+		public ActionResult Edit(int id)
+		{
+			var userId = User.Identity.GetUserId();
+			var coop = _context.Coops.Single(c => c.Id == id && c.HostId == userId);
+
+			var viewModel = new CoopFormViewModel
+			{
+				Heading = "Edit a Co-op Session",
+				Id = coop.Id,
+				Games = _context.Games.ToList(),
+				Date = coop.DateTime.ToString("d MMM yyyy"),
+				Time = coop.DateTime.ToString("HH:mm"),
+				Game = coop.GameId,
+				Venue = coop.Venue
+			};
+
+			return View("CoopForm", viewModel);
+		}
+
+		[Authorize]
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		public ActionResult Update(CoopFormViewModel viewModel)
+		{
+			// Check that model state is valid
+			if (!ModelState.IsValid)
+			{
+				// Set the Games property of view model
+				viewModel.Games = _context.Games.ToList();
+
+				return View("CoopForm", viewModel);
+			}
+
+			// Get existing Coop entity from DB
+			var userId = User.Identity.GetUserId();
+			var coop = _context.Coops.Single(c => c.Id == viewModel.Id && c.HostId == userId);
+
+			// Update Coop properties
+			coop.Venue = viewModel.Venue;
+			coop.DateTime = viewModel.GetDateTime();
+			coop.GameId = viewModel.Game;
+
+			// Save changes
 			_context.SaveChanges();
 
 			return RedirectToAction("Mine", "Coops");
