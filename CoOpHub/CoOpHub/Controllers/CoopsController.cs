@@ -1,6 +1,7 @@
 ﻿using CoOpHub.Models;
 using CoOpHub.ViewModels;
 using Microsoft.AspNet.Identity;
+using System;
 using System.Data.Entity;
 using System.Linq;
 using System.Web.Mvc;
@@ -52,7 +53,7 @@ namespace CoOpHub.Controllers
 			_context.Coops.Add(coop);
 			_context.SaveChanges();
 
-			return RedirectToAction("Index", "Home");
+			return RedirectToAction("Mine", "Coops");
 		}
 
 		[Authorize]
@@ -77,6 +78,20 @@ namespace CoOpHub.Controllers
 			};
 
 			return View("Coops", viewModel);
+		}
+
+		[Authorize]
+		public ActionResult Mine()
+		{
+			// Get list of co-op sessions I am hosting
+			var userId = User.Identity.GetUserId();
+			var coops = _context.Coops
+				.Where(c => c.HostId == userId && c.DateTime > DateTime.Now)
+				.Include(c => c.Game)   // include the related "Game" object
+				.Include(c => c.Game.Genre)     // include the related "Genre" object
+				.ToList();
+
+			return View(coops);
 		}
 	}
 }

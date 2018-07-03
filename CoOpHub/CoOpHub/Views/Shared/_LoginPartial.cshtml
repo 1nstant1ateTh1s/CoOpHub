@@ -9,6 +9,7 @@
 		<li class="dropdown">
 			<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">@User.Identity.GetUserName() <span class="caret"></span></a>
 			<ul class="dropdown-menu">
+				<li><a href="@Url.Action("Mine", "Coops")">My Upcoming Co-ops</a></li>
 				<li><a href="@Url.Action("Attending", "Coops")">Co-ops I'm Attending</a></li>
 				<li><a href="#">Hosts I'm Following</a></li>
 				<li role="separator" class="divider"></li>

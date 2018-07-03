@@ -1,0 +1,33 @@
+﻿@model IEnumerable<CoOpHub.Models.Coop>
+@{
+	ViewBag.Title = "Mine";
+}
+
+<h2>My Upcoming Co-op Sessions</h2>
+<ul class="coops voffset4">
+	@foreach (var coop in Model)
+	{
+		<li>
+			<div class="date">
+				<div class="month">
+					@coop.DateTime.ToString("MMM")
+				</div>
+				<div class="day">
+					@coop.DateTime.ToString("d ")
+				</div>
+			</div>
+			<div class="details">
+				<span class="venue">
+					@coop.Venue
+				</span>
+				<span class="game">
+					@coop.Game.Name
+				</span>
+				<span class="genre">
+					@coop.Game.Genre.Name
+				</span>
+			</div>
+		</li>
+	}
+</ul>
+
