@@ -200,9 +200,10 @@
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\AccountController.cs" />
-    <Compile Include="Controllers\AttendancesController.cs" />
+    <Compile Include="Controllers\Api\CoopsController.cs" />
+    <Compile Include="Controllers\Api\AttendancesController.cs" />
     <Compile Include="Controllers\CoopsController.cs" />
-    <Compile Include="Controllers\FollowingsController.cs" />
+    <Compile Include="Controllers\Api\FollowingsController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Dtos\AttendanceDto.cs" />
@@ -246,6 +247,10 @@
     <Compile Include="Migrations\201806281935129_AddFollowing.Designer.cs">
       <DependentUpon>201806281935129_AddFollowing.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201807031752174_AddIsCanceledToCoop.cs" />
+    <Compile Include="Migrations\201807031752174_AddIsCanceledToCoop.Designer.cs">
+      <DependentUpon>201807031752174_AddIsCanceledToCoop.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\ApplicationDbContext.cs" />
     <Compile Include="Models\Attendance.cs" />
@@ -278,6 +283,7 @@
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="Scripts\bootbox.min.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="ApplicationInsights.config">
@@ -374,6 +380,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201806281935129_AddFollowing.resx">
       <DependentUpon>201806281935129_AddFollowing.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201807031752174_AddIsCanceledToCoop.resx">
+      <DependentUpon>201807031752174_AddIsCanceledToCoop.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

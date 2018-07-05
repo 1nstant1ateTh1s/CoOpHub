@@ -8,6 +8,7 @@ using System.Web.Mvc;
 
 namespace CoOpHub.Controllers
 {
+	// Coops MVC controller
 	public class CoopsController : Controller
 	{
 		private readonly ApplicationDbContext _context;
@@ -133,10 +134,13 @@ namespace CoOpHub.Controllers
 		[Authorize]
 		public ActionResult Mine()
 		{
-			// Get list of co-op sessions I am hosting
+			// Get list of upcoming co-op sessions the currently logged in user is hosting, that have not been cancelled
 			var userId = User.Identity.GetUserId();
 			var coops = _context.Coops
-				.Where(c => c.HostId == userId && c.DateTime > DateTime.Now)
+				.Where(
+					c => c.HostId == userId && 
+					c.DateTime > DateTime.Now && 
+					!c.IsCanceled)
 				.Include(c => c.Game)   // include the related "Game" object
 				.Include(c => c.Game.Genre)     // include the related "Genre" object
 				.ToList();

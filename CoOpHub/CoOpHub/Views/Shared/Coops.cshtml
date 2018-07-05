@@ -20,6 +20,13 @@
 			<div class="details">
 				<span class="host">
 					@coop.Host.Name
+
+					<!-- If co-op session is canceled, let the user know -->
+					@if (coop.IsCanceled)
+					{
+						<span class="label label-warning">Canceled</span>
+					}
+
 					@if (Model.ShowActions)
 					{
 						<button class="btn btn-link btn-sm js-toggle-follow" data-user-id="@coop.HostId">Follow</button>
@@ -31,7 +38,7 @@
 				<span class="genre">
 					@coop.Game.Genre.Name
 				</span>
-				@if (Model.ShowActions)
+				@if (Model.ShowActions && !coop.IsCanceled)
 				{
 					<button class="btn btn-default btn-sm pull-right js-toggle-attendance" data-coop-id="@coop.Id">Going ?</button>
 				}

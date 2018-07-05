@@ -29,6 +29,9 @@
 				<div class="actions">
 					<a href="@Url.Action("Edit", "Coops", new { id = coop.Id })">
 						Edit
+					</a> |
+					<a href="#" class="js-cancel-coop" data-coop-id="@coop.Id">
+						Cancel
 					</a>
 				</div>
 
@@ -36,4 +39,58 @@
 		</li>
 	}
 </ul>
+
+<!-- Write js in "scripts" section make sure jQuery & bootstrap are loaded beforehand -->
+@section scripts
+{
+	<script>
+		$(document).ready(function () {
+
+			// Handle click event for all objects w/ the js-cancel-coop class
+			$(".js-cancel-coop").click(function (e) {
+				var link = $(e.target); // get source of the click event
+
+				// Confirm user wants to cancel the scheduled co-op session
+				bootbox.dialog({
+					message: "Are you sure you want to cancel this scheduled co-op session?",
+					title: "Confirm",
+					buttons: {
+						no: {
+							label: "No",
+							className: "btn-default",
+							callback: function () {
+								// Close the dialog modal
+								bootbox.hideAll();
+							}
+						},
+						yes: {
+							label: "Yes",
+							className: "btn-danger",
+							callback: function () {
+								// Ajax call to api
+								$.ajax({
+									url: "/api/coops/" + link.attr("data-coop-id"),
+									method: "DELETE"
+								})
+								.done(function () {
+									// If everything worked, remove this co-op session from page
+									link.parents("li").fadeOut(function () {
+										// Remove the <li> that represents the co-op session from DOM
+										$(this).remove();
+									});
+								})
+								.fail(function () {
+									// Error occured
+									alert("Something failed!")
+								});
+							}
+						}
+					}
+				});
+			});
+
+		});
+	</script>
+}
+
 

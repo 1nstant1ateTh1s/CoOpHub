@@ -18,12 +18,12 @@ namespace CoOpHub.Controllers
 
 		public ActionResult Index()
 		{
-			// Eagerly load upcoming co-op sessions
+			// Eagerly load upcoming co-op sessions that have not been cancelled
 			var upcomingCoops = _context.Coops
-				.Include(g => g.Host)	// include the related "Host" object
-				.Include(g => g.Game)	// include the related "Game" object
-				.Include(g => g.Game.Genre)		// include the related "Genre" object
-				.Where(g => g.DateTime > DateTime.Now);
+				.Include(c => c.Host)	// include the related "Host" object
+				.Include(c => c.Game)	// include the related "Game" object
+				.Include(c => c.Game.Genre)		// include the related "Genre" object
+				.Where(c => c.DateTime > DateTime.Now && !c.IsCanceled);
 
 			// Create view model
 			var viewModel = new CoopsViewModel
