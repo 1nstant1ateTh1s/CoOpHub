@@ -202,6 +202,7 @@
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\Api\CoopsController.cs" />
     <Compile Include="Controllers\Api\AttendancesController.cs" />
+    <Compile Include="Controllers\Api\NotificationsController.cs" />
     <Compile Include="Controllers\CoopsController.cs" />
     <Compile Include="Controllers\Api\FollowingsController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
@@ -251,6 +252,14 @@
     <Compile Include="Migrations\201807031752174_AddIsCanceledToCoop.Designer.cs">
       <DependentUpon>201807031752174_AddIsCanceledToCoop.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201807051654567_AddNotification.cs" />
+    <Compile Include="Migrations\201807051654567_AddNotification.Designer.cs">
+      <DependentUpon>201807051654567_AddNotification.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201807051720584_FixNotificationColumnNames.cs" />
+    <Compile Include="Migrations\201807051720584_FixNotificationColumnNames.Designer.cs">
+      <DependentUpon>201807051720584_FixNotificationColumnNames.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\ApplicationDbContext.cs" />
     <Compile Include="Models\Attendance.cs" />
@@ -260,6 +269,9 @@
     <Compile Include="Models\Genre.cs" />
     <Compile Include="Models\ApplicationUser.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
+    <Compile Include="Models\Notification.cs" />
+    <Compile Include="Models\NotificationType.cs" />
+    <Compile Include="Models\UserNotification.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
     <Compile Include="ViewModels\Account\ExternalLoginConfirmationViewModel.cs" />
@@ -383,6 +395,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201807031752174_AddIsCanceledToCoop.resx">
       <DependentUpon>201807031752174_AddIsCanceledToCoop.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201807051654567_AddNotification.resx">
+      <DependentUpon>201807051654567_AddNotification.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201807051720584_FixNotificationColumnNames.resx">
+      <DependentUpon>201807051720584_FixNotificationColumnNames.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

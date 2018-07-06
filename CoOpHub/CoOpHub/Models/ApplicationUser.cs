@@ -17,11 +17,14 @@ namespace CoOpHub.Models
 
 		public ICollection<Following> Followers { get; set; }
 		public ICollection<Following> Followees { get; set; }
+		public ICollection<UserNotification> UserNotifications { get; set; }
 
 		public ApplicationUser()
 		{
+			// Instantiate collection properties:
 			Followers = new Collection<Following>();
 			Followees = new Collection<Following>();
+			UserNotifications = new Collection<UserNotification>();
 		}
 
 		public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<ApplicationUser> manager)
@@ -30,6 +33,17 @@ namespace CoOpHub.Models
 			var userIdentity = await manager.CreateIdentityAsync(this, DefaultAuthenticationTypes.ApplicationCookie);
 			// Add custom user claims here
 			return userIdentity;
+		}
+
+		/// <summary>
+		/// Create an association between a notification and this user.
+		/// </summary>
+		/// <param name="notification">The notification to send to this user.</param>
+		public void Notify(Notification notification)
+		{
+			// Add a new UserNotification to collection property, passing this class itself as the User property, 
+			//	and the notification parameter that has been passed in as the notification object
+			UserNotifications.Add(new UserNotification(this, notification));
 		}
 	}
 }

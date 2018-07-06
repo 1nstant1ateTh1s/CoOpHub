@@ -1,5 +1,6 @@
 ﻿using CoOpHub.Models;
 using Microsoft.AspNet.Identity;
+using System.Data.Entity;
 using System.Linq;
 using System.Web.Http;
 
@@ -26,7 +27,11 @@ namespace CoOpHub.Controllers.Api
 		{
 			// Retrieve the co-op session entity only if it is hosted by the currently logged in user
 			var userId = User.Identity.GetUserId();
-			var coop = _context.Coops.Single(c => c.Id == id && c.HostId == userId);
+
+			// Use eager loading to get co-op session + all of it's attendees
+			var coop = _context.Coops
+				.Include(c => c.Attendances.Select(a => a.Attendee)) // include any users who were attending this co-op session
+				.Single(c => c.Id == id && c.HostId == userId);
 
 			// If a co-op session has already been canceled, treat it like a record that does not exist in the DB
 			if (coop.IsCanceled)
@@ -34,8 +39,8 @@ namespace CoOpHub.Controllers.Api
 				return NotFound();
 			}
 
-			// Cancel co-op session
-			coop.IsCanceled = true;
+			// Cancel the co-op session
+			coop.Cancel();
 
 			// Save changes
 			_context.SaveChanges();

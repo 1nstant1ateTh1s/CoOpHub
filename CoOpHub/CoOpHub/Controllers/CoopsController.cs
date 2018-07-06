@@ -92,14 +92,14 @@ namespace CoOpHub.Controllers
 				return View("CoopForm", viewModel);
 			}
 
-			// Get existing Coop entity from DB
+			// Get existing Coop entity from DB (use eager loading to get coop + all of it's attendees)
 			var userId = User.Identity.GetUserId();
-			var coop = _context.Coops.Single(c => c.Id == viewModel.Id && c.HostId == userId);
+			var coop = _context.Coops
+				.Include(c => c.Attendances.Select(a => a.Attendee)) // include any users who were attending this gig
+				.Single(c => c.Id == viewModel.Id && c.HostId == userId);
 
-			// Update Coop properties
-			coop.Venue = viewModel.Venue;
-			coop.DateTime = viewModel.GetDateTime();
-			coop.GameId = viewModel.Game;
+			// Update Coop
+			coop.Modify(viewModel.GetDateTime(), viewModel.Venue, viewModel.Game);
 
 			// Save changes
 			_context.SaveChanges();
