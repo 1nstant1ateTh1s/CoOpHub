@@ -1,0 +1,13 @@
+﻿@model IEnumerable<CoOpHub.Models.ApplicationUser>
+@{
+	ViewBag.Title = "Index";
+}
+
+<h2>Who I Follow</h2>
+<ul>
+	@foreach(var host in Model)
+	{
+		<li>@host.Name</li>
+	}
+</ul>
+
