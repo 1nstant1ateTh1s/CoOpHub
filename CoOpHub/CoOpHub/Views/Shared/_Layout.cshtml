@@ -39,8 +39,99 @@
 		</footer>
 	</div>
 
-	@Scripts.Render("~/bundles/jquery")
-	@Scripts.Render("~/bundles/bootstrap")
+	@Scripts.Render("~/bundles/lib")
 	@RenderSection("scripts", required: false)
+
+	<!-- Make browser ignore what we are putting here in this script block -->
+	<!--
+		NOTES:
+			'<%= %>' is used by the template engine to eval variables
+			'<% %>' is used by the template engine to eval code/logic
+	-->
+	<script type="text/x-template" id="notifications-template">
+		<ul class="notifications">
+			<!-- Actual markup for notifications: -->
+			<%
+				_.each(notifications, function (notification) {
+					if (notification.type == 1) { %> <!-- render CoopCanceled notifications -->
+						<li><span class="highlight"><%= notification.coop.host.name %></span> has canceled the co-op at <%= notification.coop.venue %> at <%= moment(notification.coop.dateTime).format("D MMM HH:mm") %>.</li>
+					<% }
+					if (notification.type == 2) { <!-- render CoopUpdated notifications -->
+						var changes = [],
+							originalValues = [],
+							newValues = [];
+
+						<!-- Has co-op venue changed? -->
+						if (notification.originalVenue != notification.coop.venue) {
+							changes.push('venue');
+							originalValues.push(notification.originalVenue);
+							newValues.push(notification.coop.venue);
+						}
+
+						<!-- Has co-op date/time changed? -->
+						if (notification.originalDateTime != notification.coop.dateTime) {
+							changes.push('date/time');
+							originalValues.push(moment(notification.originalDateTime).format("D MMM HH:mm"));
+							newValues.push(moment(notification.coop.dateTime).format("D MMM HH:mm"));
+						}
+
+						<!-- Has co-op game changed? -->
+						if (notification.originalGame.id != notification.coop.game.id) {
+							changes.push('game');
+							originalValues.push(notification.originalGame.name);
+							newValues.push(notification.coop.game.name);
+						}
+
+					%>
+						<li><span class="highlight"><%= notification.coop.host.name %></span> has changed the <%= changes.join(' and ') %> for the co-op session from <%= originalValues.join('/') %> to <%= newValues.join('/') %>.</li>
+					<% }
+				})
+			%>
+		</ul>
+	</script>
+
+	<script>
+		$(document).ready(function () {
+
+			// Make API call to get count of new notifications
+			$.getJSON("/api/notifications", function (notifications) {
+
+				if (notifications.length == 0) {
+					// If the notification count is 0, do not display badge & popover elements
+					return;
+				}
+
+				// Update notifications count element
+				$(".js-notifications-count")
+					.text(notifications.length)
+					.removeClass("hide")
+					.addClass("animated bounceInDown");
+
+				// Create popover element for notifications if the count of notifications is greater than 0
+				$(".notifications").popover({
+					html: true,
+					title: "Notifications",
+					content: function () {
+						// Note: All underscorejs methods start w/: _.
+						var compiled = _.template($("#notifications-template").html());
+						return compiled({ notifications: notifications });
+					},
+					placement: "bottom",
+					template: '<div class="popover popover-notifications" role="tooltip"><div class="arrow"></div><h3 class="popover-title"></h3><div class="popover-content"></div></div>'
+
+				}).on("shown.bs.popover", function () {
+					// API call to mark notifications as "IsRead"
+					$.post("/api/notifications/markAsRead")
+						.done(function () {
+							// Hide notification count badge
+							$(".js-notifications-count")
+								.text("")
+								.addClass("hide");
+						});
+				});
+			});
+
+		});
+	</script>
 </body>
 </html>

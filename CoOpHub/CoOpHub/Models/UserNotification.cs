@@ -23,7 +23,7 @@ namespace CoOpHub.Models
 		public Notification Notification { get; private set; }
 
 		// Other properties:
-		public bool IsRead { get; set; }
+		public bool IsRead { get; private set; }
 
 		/// <summary>
 		/// Default constructor
@@ -52,6 +52,15 @@ namespace CoOpHub.Models
 
 			User = user;
 			Notification = notification;
+		}
+
+		/// <summary>
+		/// Mark user notification as read.
+		/// </summary>
+		public void Read()
+		{
+			// Set IsRead property to true
+			IsRead = true;
 		}
 	}
 }
