@@ -18,6 +18,12 @@ namespace CoOpHub.Controllers
 			_context = new ApplicationDbContext();
 		}
 
+		[HttpPost]
+		public ActionResult Search(CoopsViewModel viewModel)
+		{
+			return RedirectToAction("Index", "Home", new { query = viewModel.SearchTerm });
+		}
+
 		[Authorize]
 		public ActionResult Create()
 		{

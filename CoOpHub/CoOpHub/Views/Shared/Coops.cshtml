@@ -5,6 +5,21 @@
 }
 
 <h1>@Model.Heading</h1>
+
+<!-- Search form -->
+@using (Html.BeginForm("Search", "Coops"))
+{
+	<div class="form-group">
+		<div id="searchCoops" class="input-group">
+			@Html.TextBoxFor(m => m.SearchTerm, new { @class = "form-control", placeholder = "Search by Host, Game, Genre, or Location..." })
+			<span class="input-group-addon">
+				<i class="glyphicon glyphicon-search"></i>
+			</span>
+		</div>
+	</div>
+}
+
+<!-- List of upcoming co-op sessions -->
 <ul class="coops voffset4">
 	@foreach (var coop in Model.UpcomingCoops)
 	{
