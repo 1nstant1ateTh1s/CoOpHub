@@ -20,7 +20,7 @@
 }
 
 <!-- List of upcoming co-op sessions -->
-<ul class="coops voffset4">
+<ul id="coops" class="coops voffset4">
 	@foreach (var coop in Model.UpcomingCoops)
 	{
 		<li>
@@ -43,11 +43,6 @@
 					{
 						<span class="label label-warning">Canceled</span>
 					}
-
-					@if (Model.ShowActions)
-					{
-						<button class="btn btn-link btn-sm js-toggle-follow" data-user-id="@coop.HostId">Follow</button>
-					}
 				</span>
 				<span class="game">
 					@coop.Game.Name
@@ -57,11 +52,11 @@
 				</span>
 				@if (Model.ShowActions && !coop.IsCanceled)
 				{
-					<button 
-							class="btn @(Model.Attendances.Contains(coop.Id) ? "btn-info" : "btn-default") btn-sm pull-right js-toggle-attendance" 
-							data-coop-id="@coop.Id">
-						Going?
-					</button>
+				<button data-coop-id="@coop.Id"
+						class="btn
+								@(Model.Attendances.Contains(coop.Id) ? "btn-info" : "btn-default")
+								btn-sm js-toggle-attendance"
+						>@(Model.Attendances.Contains(coop.Id) ? "Going" : "Going?")</button>
 				}
 
 			</div>
@@ -73,61 +68,8 @@
 {
 	<script>
 		$(document).ready(function () {
-			// "attend coop" click event
-			$(".js-toggle-attendance").click(function (e) {
-				var button = $(e.target);
-
-				// Check current button state to determine which action to toggle
-				if (button.hasClass("btn-default")) {
-					// Make ajax call to api to attend this coop
-					$.post("/api/attendances", { coopId: button.attr("data-coop-id") })
-						.done(function () {
-							// Success callback - when api call done, update button look
-							button
-								.removeClass("btn-default")
-								.addClass("btn-info")
-								.text("Going");
-						})
-						.fail(function () {
-							// Error callback
-							alert("Something failed!");
-						});
-				} else {
-					// Make ajax call to api to no longer attend this coop
-					$.ajax({
-						url: "/api/attendances/" + button.attr("data-coop-id"),
-						method: "DELETE"
-					})
-						.done(function () {
-							// Success scenario - when api call done, toggle button look
-							button
-								.removeClass("btn-info")
-								.addClass("btn-default")
-								.text("Going?")
-						})
-						.fail(function () {
-							// Error scenario
-							alert("Something failed!");
-						});
-				}				
-			});
-
-			// follow host click event
-			$(".js-toggle-follow").click(function (e) {
-				var button = $(e.target);
-
-				// Make ajax call to api
-				$.post("/api/followings", { followeeId: button.attr("data-user-id") })
-					.done(function () {
-						// Success callback - when api call done, update button look
-						button.text("Following");
-					})
-					.fail(function () {
-						// Error callback
-						alert("Something failed!");
-					});
-
-			});
+			// Initialize the coops controller .js object
+			CoopsController.init("#coops"); // *NOTE: when we call the .init() function, we pass a selector to provide a reference to the current DOM
 		});
 	</script>
 }

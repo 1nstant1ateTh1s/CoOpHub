@@ -22,7 +22,7 @@ namespace CoOpHub.Controllers.Api
 			var userId = User.Identity.GetUserId();
 
 			// Check if following already exists in db
-			if (_context.Followings.Any(f => f.FolloweeId == userId && f.FolloweeId == dto.FolloweeId))
+			if (_context.Followings.Any(f => f.FollowerId == userId && f.FolloweeId == dto.FolloweeId))
 			{
 				return BadRequest("Following already exists.");
 			}
@@ -37,6 +37,29 @@ namespace CoOpHub.Controllers.Api
 			_context.SaveChanges();
 
 			return Ok();
+		}
+
+		[HttpDelete]
+		public IHttpActionResult Unfollow(FollowingDto dto)
+		{
+			var userId = User.Identity.GetUserId();
+
+			// Get the following for the specified artist
+			var following = _context.Followings
+				.SingleOrDefault(f => f.FollowerId == userId && f.FolloweeId == dto.FolloweeId);
+
+			// Check if following exists
+			if (following == null)
+			{
+				return NotFound();
+			}
+
+			// Remove the attendance entity & save changes
+			_context.Followings.Remove(following);
+			_context.SaveChanges();
+
+			// Return ok with id of the following in the response
+			return Ok(dto.FolloweeId);
 		}
 	}
 }

@@ -7,6 +7,15 @@ namespace CoOpHub
 		// For more information on bundling, visit https://go.microsoft.com/fwlink/?LinkId=301862
 		public static void RegisterBundles(BundleCollection bundles)
 		{
+			// Custom app .js script bundle
+			bundles.Add(new ScriptBundle("~/bundles/app").Include(
+				"~/Scripts/app/services/attendanceService.js",
+				"~/Scripts/app/services/followingService.js",
+				"~/Scripts/app/controllers/coopsController.js",
+				"~/Scripts/app/controllers/coopDetailsController.js",
+				"~/Scripts/app/app.js"));
+
+			// 3rd-party .js script bundle
 			bundles.Add(new ScriptBundle("~/bundles/lib").Include(
 						"~/Scripts/jquery-{version}.js",
 						"~/Scripts/underscore-min.js",

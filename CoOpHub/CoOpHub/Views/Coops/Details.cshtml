@@ -3,52 +3,34 @@
 	ViewBag.Title = "Details";
 }
 
-<h2>
-	@Model.Coop.Host.Name
-	@if (User.Identity.IsAuthenticated)
+<div id="details">
+	<h2>
+		@Model.Coop.Host.Name
+		@if (User.Identity.IsAuthenticated)
+		{
+		
+			<button data-user-id="@Model.Coop.HostId"
+					class="btn
+						@(Model.IsFollowing ? "btn-info" : "btn-default")
+						js-toggle-follow"
+					>@(Model.IsFollowing ? "Following" : "Follow")</button>
+			}
+	</h2>
+
+	<p>Playing @Model.Coop.Game.Name at @Model.Coop.Venue on @Model.Coop.DateTime.ToString("d MMM") at @Model.Coop.DateTime.ToString("HH:mm")</p>
+
+	@if (User.Identity.IsAuthenticated && Model.IsAttending)
 	{
-		if (Model.IsFollowing)
-		{
-			<button class="btn btn-info">Following</button>
-		}
-		else
-		{
-			<button class="btn btn-default js-toggle-follow" data-user-id="@Model.Coop.HostId">Follow</button>
-		}
+		<p>You are going to this event.</p>
 	}
-</h2>
-
-<p>Playing @Model.Coop.Game.Name at @Model.Coop.Venue on @Model.Coop.DateTime.ToString("d MMM") at @Model.Coop.DateTime.ToString("HH:mm")</p>
-
-@if (User.Identity.IsAuthenticated && Model.IsAttending)
-{
-	<p>You are going to this event.</p>
-}
+</div>
 
 @section scripts
 {
 	<script>
 		$(document).ready(function () {
-
-			// follow artist click event
-			$(".js-toggle-follow").click(function (e) {
-				var button = $(e.target);
-
-				// Make ajax call to api
-				$.post("/api/followings", { followeeId: button.attr("data-user-id") })
-					.done(function () {
-						// Success callback - when api call done, update button look
-						button
-							.removeClass("btn-default js-toggle-follow")
-							.addClass("btn-info")
-							.text("Following");
-					})
-					.fail(function () {
-						// Error callback
-						alert("Something failed!");
-					});
-
-			});
+			// Initialize coop details controller
+			CoopDetailsController.init("#details");
 		});
 	</script>
 }
