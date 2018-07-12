@@ -1,5 +1,6 @@
 ﻿using CoOpHub.Models;
 using CoOpHub.ViewModels;
+using Microsoft.AspNet.Identity;
 using System;
 using System.Data.Entity;
 using System.Linq;
@@ -37,13 +38,21 @@ namespace CoOpHub.Controllers
 						c.Venue.Contains(query));
 			}
 
+			// Load attendances for future co-op sessions for the current user
+			var userId = User.Identity.GetUserId();
+			var attendances = _context.Attendances
+				.Where(a => a.AttendeeId == userId && a.Coop.DateTime > DateTime.Now) // get attendances for future co-op sessions only
+				.ToList() // immediately execute query
+				.ToLookup(a => a.CoopId); // convert the list to a data structure that allows us to quickly look up attendances by coop ID. *NOTE: A "LookUp" is like a dictionary - internally it uses a hash table to quickly look up objects
+
 			// Create view model
 			var viewModel = new CoopsViewModel
 			{
 				UpcomingCoops = upcomingCoops,
 				ShowActions = User.Identity.IsAuthenticated,
 				Heading = "Upcoming Co-op sessions",
-				SearchTerm = query // autopopulate search box w/ the value of any query, if present
+				SearchTerm = query, // autopopulate search box w/ the value of any query, if present
+				Attendances = attendances
 			};
 
 			return View("Coops", viewModel);

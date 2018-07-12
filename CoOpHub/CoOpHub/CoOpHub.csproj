@@ -297,6 +297,7 @@
     <Compile Include="ViewModels\Account\ResetPasswordViewModel.cs" />
     <Compile Include="ViewModels\Account\SendCodeViewModel.cs" />
     <Compile Include="ViewModels\Account\VerifyCodeViewModel.cs" />
+    <Compile Include="ViewModels\CoopDetailsViewModel.cs" />
     <Compile Include="ViewModels\CoopFormViewModel.cs" />
     <Compile Include="ViewModels\CoopsViewModel.cs" />
     <Compile Include="ViewModels\FutureDate.cs" />
@@ -376,6 +377,7 @@
     <Content Include="Views\Coops\CoopForm.cshtml" />
     <Content Include="Views\Coops\Mine.cshtml" />
     <Content Include="Views\Followees\Index.cshtml" />
+    <Content Include="Views\Coops\Details.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

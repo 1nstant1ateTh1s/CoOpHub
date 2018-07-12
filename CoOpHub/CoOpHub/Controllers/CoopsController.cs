@@ -113,6 +113,41 @@ namespace CoOpHub.Controllers
 			return RedirectToAction("Mine", "Coops");
 		}
 
+		public ActionResult Details(int id)
+		{
+			// Get details for the specified co-op session
+			var coop = _context.Coops
+				.Include(c => c.Host) // use eager loading to include the related "Host" object
+				.Include(c => c.Game) // use eager loading to include the related "Game" object
+				.Include(c => c.Game.Genre) // use eager loading to include the related "Genre" object
+				.Single(c => c.Id == id);
+
+			// Check if co-op session was not found
+			if (coop == null)
+			{
+				return HttpNotFound();
+			}
+
+			// Initialize view model
+			var viewModel = new CoopDetailsViewModel { Coop = coop };
+
+			// If the user is authenticated
+			if (User.Identity.IsAuthenticated)
+			{
+				var userId = User.Identity.GetUserId();
+
+				// Check if user is already attending this co-op session or not
+				viewModel.IsAttending = _context.Attendances
+					.Any(a => a.CoopId == coop.Id && a.AttendeeId == userId);
+
+				// Check if user is already following this host or not
+				viewModel.IsFollowing = _context.Followings
+					.Any(f => f.FolloweeId == coop.HostId && f.FollowerId == userId);
+			}
+
+			return View("Details", viewModel);
+		}
+
 		[Authorize]
 		public ActionResult Attending()
 		{
@@ -121,17 +156,24 @@ namespace CoOpHub.Controllers
 			var coops = _context.Attendances
 				.Where(a => a.AttendeeId == userId)
 				.Select(a => a.Coop)
-				.Include(g => g.Host)   // include the related "Host" object
-				.Include(g => g.Game)	// include the related "Game" object
-				.Include(g => g.Game.Genre)     // include the related "Genre" object
+				.Include(c => c.Host)   // include the related "Host" object
+				.Include(c => c.Game)	// include the related "Game" object
+				.Include(c => c.Game.Genre)     // include the related "Genre" object
 				.ToList();
+
+			// Load attendances for future co-op sessions for the current user
+			var attendances = _context.Attendances
+				.Where(a => a.AttendeeId == userId && a.Coop.DateTime > DateTime.Now) // get attendances for future co-op sessions only
+				.ToList() // immediately execute query
+				.ToLookup(a => a.CoopId); // convert the list to a data structure that allows us to quickly look up attendances by coop ID. *NOTE: A "LookUp" is like a dictionary - internally it uses a hash table to quickly look up objects
 
 			// Build view model
 			var viewModel = new CoopsViewModel()
 			{
 				UpcomingCoops = coops,
 				ShowActions = User.Identity.IsAuthenticated,
-				Heading = "Co-op sessions I'm Attending"
+				Heading = "Co-op sessions I'm Attending",
+				Attendances = attendances
 			};
 
 			return View("Coops", viewModel);

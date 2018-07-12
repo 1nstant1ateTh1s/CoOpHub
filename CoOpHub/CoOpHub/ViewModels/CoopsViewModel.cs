@@ -1,5 +1,6 @@
 ﻿using CoOpHub.Models;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace CoOpHub.ViewModels
 {
@@ -9,5 +10,6 @@ namespace CoOpHub.ViewModels
 		public bool ShowActions { get; set; }
 		public string Heading { get; set; }
 		public string SearchTerm { get; set; }
+		public ILookup<int, Attendance> Attendances { get; set; }
 	}
 }

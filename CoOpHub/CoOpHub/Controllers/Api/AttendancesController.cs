@@ -38,5 +38,28 @@ namespace CoOpHub.Controllers.Api
 
 			return Ok();
 		}
+
+		[HttpDelete]
+		public IHttpActionResult DeleteAttendance(int id)
+		{
+			var userId = User.Identity.GetUserId();
+
+			// Get the attendance for the specified co-op session Id
+			var attendance = _context.Attendances
+				.SingleOrDefault(a => a.CoopId == id && a.AttendeeId == userId);
+
+			// Check if attendance exists
+			if (attendance == null)
+			{
+				return NotFound();
+			}
+
+			// Remove the attendance entity & save changes
+			_context.Attendances.Remove(attendance);
+			_context.SaveChanges();
+
+			// Return ok with id of the attendance in the response
+			return Ok(id);
+		}
 	}
 }
