@@ -1,8 +1,7 @@
 ﻿using CoOpHub.Models;
+using CoOpHub.Persistence;
 using CoOpHub.ViewModels;
 using Microsoft.AspNet.Identity;
-using System;
-using System.Data.Entity;
 using System.Linq;
 using System.Web.Mvc;
 
@@ -11,11 +10,11 @@ namespace CoOpHub.Controllers
 	// Coops MVC controller
 	public class CoopsController : Controller
 	{
-		private readonly ApplicationDbContext _context;
+		private readonly IUnitOfWork _unitOfWork;
 
 		public CoopsController()
 		{
-			_context = new ApplicationDbContext();
+			_unitOfWork = new UnitOfWork(new ApplicationDbContext());
 		}
 
 		[HttpPost]
@@ -30,7 +29,7 @@ namespace CoOpHub.Controllers
 			var viewModel = new CoopFormViewModel
 			{
 				Heading = "Add a Co-op Session",
-				Games = _context.Games.ToList()
+				Games = _unitOfWork.Games.GetGames()
 			};
 
 			return View("CoopForm", viewModel);
@@ -45,7 +44,7 @@ namespace CoOpHub.Controllers
 			if (!ModelState.IsValid)
 			{
 				// Set the Games property of view model
-				viewModel.Games = _context.Games.ToList();
+				viewModel.Games = _unitOfWork.Games.GetGames();
 
 				return View("CoopForm", viewModel);
 			}
@@ -58,8 +57,11 @@ namespace CoOpHub.Controllers
 				Venue = viewModel.Venue
 			};
 
-			_context.Coops.Add(coop);
-			_context.SaveChanges();
+			// Add the new co-op session
+			_unitOfWork.Coops.Add(coop);
+
+			// Complete the transaction
+			_unitOfWork.Complete();
 
 			return RedirectToAction("Mine", "Coops");
 		}
@@ -67,14 +69,27 @@ namespace CoOpHub.Controllers
 		[Authorize]
 		public ActionResult Edit(int id)
 		{
-			var userId = User.Identity.GetUserId();
-			var coop = _context.Coops.Single(c => c.Id == id && c.HostId == userId);
+			// Get existing co-op session entity from repository
+			var coop = _unitOfWork.Coops.GetCoop(id);
+
+			// Security checks on returned coop
+			if (coop == null)
+			{
+				// Co-op session not found
+				return HttpNotFound();
+			}
+
+			if (coop.HostId != User.Identity.GetUserId())
+			{
+				// Co-op session does not belong to the current user
+				return new HttpUnauthorizedResult();
+			}
 
 			var viewModel = new CoopFormViewModel
 			{
 				Heading = "Edit a Co-op Session",
 				Id = coop.Id,
-				Games = _context.Games.ToList(),
+				Games = _unitOfWork.Games.GetGames(),
 				Date = coop.DateTime.ToString("d MMM yyyy"),
 				Time = coop.DateTime.ToString("HH:mm"),
 				Game = coop.GameId,
@@ -93,22 +108,32 @@ namespace CoOpHub.Controllers
 			if (!ModelState.IsValid)
 			{
 				// Set the Games property of view model
-				viewModel.Games = _context.Games.ToList();
+				viewModel.Games = _unitOfWork.Games.GetGames();
 
 				return View("CoopForm", viewModel);
 			}
 
-			// Get existing Coop entity from DB (use eager loading to get coop + all of it's attendees)
-			var userId = User.Identity.GetUserId();
-			var coop = _context.Coops
-				.Include(c => c.Attendances.Select(a => a.Attendee)) // include any users who were attending this gig
-				.Single(c => c.Id == viewModel.Id && c.HostId == userId);
+			// Get existing Co-op session entity from DB (use eager loading to get coop + all of it's attendees)
+			var coop = _unitOfWork.Coops.GetCoopWithAttendees(viewModel.Id);
+
+			// Security checks on return coop
+			if (coop == null)
+			{
+				// Coop not found
+				return HttpNotFound();
+			}
+
+			if (coop.HostId != User.Identity.GetUserId())
+			{
+				// Co-op session does not belong to the current user
+				return new HttpUnauthorizedResult();
+			}
 
 			// Update Coop
 			coop.Modify(viewModel.GetDateTime(), viewModel.Venue, viewModel.Game);
 
-			// Save changes
-			_context.SaveChanges();
+			// Complete the transaction
+			_unitOfWork.Complete();
 
 			return RedirectToAction("Mine", "Coops");
 		}
@@ -116,11 +141,7 @@ namespace CoOpHub.Controllers
 		public ActionResult Details(int id)
 		{
 			// Get details for the specified co-op session
-			var coop = _context.Coops
-				.Include(c => c.Host) // use eager loading to include the related "Host" object
-				.Include(c => c.Game) // use eager loading to include the related "Game" object
-				.Include(c => c.Game.Genre) // use eager loading to include the related "Genre" object
-				.Single(c => c.Id == id);
+			var coop = _unitOfWork.Coops.GetCoop(id);
 
 			// Check if co-op session was not found
 			if (coop == null)
@@ -137,12 +158,10 @@ namespace CoOpHub.Controllers
 				var userId = User.Identity.GetUserId();
 
 				// Check if user is already attending this co-op session or not
-				viewModel.IsAttending = _context.Attendances
-					.Any(a => a.CoopId == coop.Id && a.AttendeeId == userId);
+				viewModel.IsAttending = _unitOfWork.Attendances.GetAttendance(coop.Id, userId) != null; // NOTE: Using "GetAttendance(...)" method and checking for null is more reusable than a method like "IsAttending(..)"
 
 				// Check if user is already following this host or not
-				viewModel.IsFollowing = _context.Followings
-					.Any(f => f.FolloweeId == coop.HostId && f.FollowerId == userId);
+				viewModel.IsFollowing = _unitOfWork.Followings.GetFollowing(userId, coop.HostId) != null; // NOTE: Using "GetFollowing(...)" method and checking for null is more reusable than a method like "IsFollowing(..)"
 			}
 
 			return View("Details", viewModel);
@@ -151,29 +170,15 @@ namespace CoOpHub.Controllers
 		[Authorize]
 		public ActionResult Attending()
 		{
-			// Get list of co-op sessions user is attending
 			var userId = User.Identity.GetUserId();
-			var coops = _context.Attendances
-				.Where(a => a.AttendeeId == userId)
-				.Select(a => a.Coop)
-				.Include(c => c.Host)   // include the related "Host" object
-				.Include(c => c.Game)	// include the related "Game" object
-				.Include(c => c.Game.Genre)     // include the related "Genre" object
-				.ToList();
-
-			// Load attendances for future co-op sessions for the current user
-			var attendances = _context.Attendances
-				.Where(a => a.AttendeeId == userId && a.Coop.DateTime > DateTime.Now) // get attendances for future co-op sessions only
-				.ToList() // immediately execute query
-				.ToLookup(a => a.CoopId); // convert the list to a data structure that allows us to quickly look up attendances by coop ID. *NOTE: A "LookUp" is like a dictionary - internally it uses a hash table to quickly look up objects
 
 			// Build view model
 			var viewModel = new CoopsViewModel()
 			{
-				UpcomingCoops = coops,
+				UpcomingCoops = _unitOfWork.Coops.GetCoopsUserAttending(userId),
 				ShowActions = User.Identity.IsAuthenticated,
 				Heading = "Co-op sessions I'm Attending",
-				Attendances = attendances
+				Attendances = _unitOfWork.Attendances.GetFutureAttendances(userId).ToLookup(a => a.CoopId) // .ToLookup() = convert the list to a data structure that allows us to quickly look up attendances by coop ID. *NOTE: A "LookUp" is like a dictionary - internally it uses a hash table to quickly look up objects
 			};
 
 			return View("Coops", viewModel);
@@ -184,14 +189,7 @@ namespace CoOpHub.Controllers
 		{
 			// Get list of upcoming co-op sessions the currently logged in user is hosting, that have not been cancelled
 			var userId = User.Identity.GetUserId();
-			var coops = _context.Coops
-				.Where(
-					c => c.HostId == userId && 
-					c.DateTime > DateTime.Now && 
-					!c.IsCanceled)
-				.Include(c => c.Game)   // include the related "Game" object
-				.Include(c => c.Game.Genre)     // include the related "Genre" object
-				.ToList();
+			var coops = _unitOfWork.Coops.GetUpcomingCoopsByHost(userId);
 
 			return View(coops);
 		}
