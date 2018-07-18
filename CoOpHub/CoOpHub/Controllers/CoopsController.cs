@@ -12,9 +12,10 @@ namespace CoOpHub.Controllers
 	{
 		private readonly IUnitOfWork _unitOfWork;
 
-		public CoopsController()
+		public CoopsController(IUnitOfWork unitOfWork)
 		{
-			_unitOfWork = new UnitOfWork(new ApplicationDbContext());
+			// Dependency Inversion - no reliance on entity framework !!
+			_unitOfWork = unitOfWork;
 		}
 
 		[HttpPost]
