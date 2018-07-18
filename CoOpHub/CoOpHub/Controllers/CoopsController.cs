@@ -1,6 +1,6 @@
-﻿using CoOpHub.Models;
-using CoOpHub.Persistence;
-using CoOpHub.ViewModels;
+﻿using CoOpHub.Core;
+using CoOpHub.Core.Models;
+using CoOpHub.Core.ViewModels;
 using Microsoft.AspNet.Identity;
 using System.Linq;
 using System.Web.Mvc;

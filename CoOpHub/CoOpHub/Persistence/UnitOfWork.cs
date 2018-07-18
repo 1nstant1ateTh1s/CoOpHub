@@ -1,5 +1,6 @@
-﻿using CoOpHub.Models;
-using CoOpHub.Repositories;
+﻿using CoOpHub.Core;
+using CoOpHub.Core.Repositories;
+using CoOpHub.Persistence.Repositories;
 
 namespace CoOpHub.Persistence
 {

@@ -1,5 +1,5 @@
-﻿using CoOpHub.Models;
-using CoOpHub.ViewModels;
+﻿using CoOpHub.Core.Models;
+using CoOpHub.Core.ViewModels;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;

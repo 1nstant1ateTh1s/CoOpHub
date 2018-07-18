@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using CoOpHub.Dtos;
-using CoOpHub.Models;
+using CoOpHub.Core.Dtos;
+using CoOpHub.Core.Models;
 
 namespace CoOpHub.Mappings
 {

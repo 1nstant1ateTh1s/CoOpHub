@@ -1,5 +1,5 @@
-﻿using CoOpHub.Models;
-using CoOpHub.ViewModels;
+﻿using CoOpHub.Persistence;
+using CoOpHub.Core.ViewModels;
 using Microsoft.AspNet.Identity;
 using System;
 using System.Data.Entity;

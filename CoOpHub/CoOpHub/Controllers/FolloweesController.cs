@@ -1,4 +1,4 @@
-﻿using CoOpHub.Models;
+﻿using CoOpHub.Persistence;
 using Microsoft.AspNet.Identity;
 using System.Linq;
 using System.Web.Mvc;

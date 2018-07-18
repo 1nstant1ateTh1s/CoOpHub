@@ -1,5 +1,6 @@
-﻿using CoOpHub.Dtos;
-using CoOpHub.Models;
+﻿using CoOpHub.Core.Dtos;
+using CoOpHub.Core.Models;
+using CoOpHub.Persistence;
 using Microsoft.AspNet.Identity;
 using System.Linq;
 using System.Web.Http;
