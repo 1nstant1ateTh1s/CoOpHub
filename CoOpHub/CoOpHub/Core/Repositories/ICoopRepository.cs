@@ -10,5 +10,6 @@ namespace CoOpHub.Core.Repositories
 		IEnumerable<Coop> GetCoopsUserAttending(string userId);
 		Coop GetCoopWithAttendees(int coopId);
 		IEnumerable<Coop> GetUpcomingCoopsByHost(string userId);
+		IEnumerable<Coop> GetUpcomingCoops(string searchTerm = null);
 	}
 }

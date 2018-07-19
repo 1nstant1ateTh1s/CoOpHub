@@ -1,7 +1,5 @@
-﻿using CoOpHub.Persistence;
+﻿using CoOpHub.Core;
 using Microsoft.AspNet.Identity;
-using System.Data.Entity;
-using System.Linq;
 using System.Web.Http;
 
 namespace CoOpHub.Controllers.Api
@@ -10,11 +8,12 @@ namespace CoOpHub.Controllers.Api
 	[Authorize]
 	public class CoopsController : ApiController
 	{
-		private ApplicationDbContext _context;
+		private readonly IUnitOfWork _unitOfWork;
 
-		public CoopsController()
+		public CoopsController(IUnitOfWork unitOfWork)
 		{
-			_context = new ApplicationDbContext();
+			// Dependency Inversion - no reliance on entity framework !!
+			_unitOfWork = unitOfWork;
 		}
 
 		/// <summary>
@@ -29,21 +28,25 @@ namespace CoOpHub.Controllers.Api
 			var userId = User.Identity.GetUserId();
 
 			// Use eager loading to get co-op session + all of it's attendees
-			var coop = _context.Coops
-				.Include(c => c.Attendances.Select(a => a.Attendee)) // include any users who were attending this co-op session
-				.Single(c => c.Id == id && c.HostId == userId);
+			var coop = _unitOfWork.Coops.GetCoopWithAttendees(id);
 
-			// If a co-op session has already been canceled, treat it like a record that does not exist in the DB
-			if (coop.IsCanceled)
+			// Security checks on returned co-op session:
+			if (coop == null || coop.IsCanceled)
 			{
+				// Co-op session not found, or if a co-op session has already been canceled, treat it like a record that does not exist in the DB
 				return NotFound();
+			}
+			
+			if (coop.HostId != userId)
+			{
+				// Co-op session does not belong to the current user
+				return Unauthorized();
 			}
 
 			// Cancel the co-op session
 			coop.Cancel();
 
-			// Save changes
-			_context.SaveChanges();
+			_unitOfWork.Complete();
 
 			return Ok();
 		}

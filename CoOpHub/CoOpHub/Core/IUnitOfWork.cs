@@ -8,6 +8,9 @@ namespace CoOpHub.Core
 		ICoopRepository Coops { get; }
 		IFollowingRepository Followings { get; }
 		IGameRepository Games { get; }
+		IApplicationUserRepository Users { get; }
+		INotificationRepository Notifications { get; }
+		IUserNotificationRepository UserNotifications { get; }
 
 		void Complete();
 	}

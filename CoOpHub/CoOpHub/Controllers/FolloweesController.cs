@@ -1,27 +1,24 @@
-﻿using CoOpHub.Persistence;
+﻿using CoOpHub.Core;
 using Microsoft.AspNet.Identity;
-using System.Linq;
 using System.Web.Mvc;
 
 namespace CoOpHub.Controllers
 {
 	public class FolloweesController : Controller
 	{
-		private ApplicationDbContext _context;
+		private readonly IUnitOfWork _unitOfWork;
 
-		public FolloweesController()
+		public FolloweesController(IUnitOfWork unitOfWork)
 		{
-			_context = new ApplicationDbContext();
+			// Dependency Inversion - no reliance on entity framework !!
+			_unitOfWork = unitOfWork;
 		}
 
 		public ActionResult Index()
 		{
 			// Get hosts the current user is following
 			var userId = User.Identity.GetUserId();
-			var hosts = _context.Followings
-				.Where(f => f.FollowerId == userId)
-				.Select(f => f.Followee)
-				.ToList();
+			var hosts = _unitOfWork.Users.GetArtistsFollowedBy(userId);
 
 			return View(hosts);
 		}

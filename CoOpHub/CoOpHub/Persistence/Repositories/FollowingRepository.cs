@@ -1,6 +1,5 @@
 ﻿using CoOpHub.Core.Models;
 using CoOpHub.Core.Repositories;
-using CoOpHub.Persistence;
 using System.Linq;
 
 namespace CoOpHub.Persistence.Repositories
@@ -24,6 +23,24 @@ namespace CoOpHub.Persistence.Repositories
 		{
 			return _context.Followings
 					.SingleOrDefault(f => f.FolloweeId == hostId && f.FollowerId == userId);
+		}
+
+		/// <summary>
+		/// Add a following.
+		/// </summary>
+		/// <param name="following">The following to add.</param>
+		public void Add(Following following)
+		{
+			_context.Followings.Add(following);
+		}
+
+		/// <summary>
+		/// Remove a following.
+		/// </summary>
+		/// <param name="gig">The following to remove.</param>
+		public void Remove(Following following)
+		{
+			_context.Followings.Remove(following);
 		}
 	}
 }

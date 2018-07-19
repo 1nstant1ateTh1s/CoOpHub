@@ -7,5 +7,7 @@ namespace CoOpHub.Core.Repositories
 	{
 		Attendance GetAttendance(int coopId, string userId);
 		IEnumerable<Attendance> GetFutureAttendances(string userId);
+		void Add(Attendance attendance);
+		void Remove(Attendance attendance);
 	}
 }

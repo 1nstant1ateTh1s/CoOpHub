@@ -38,5 +38,23 @@ namespace CoOpHub.Persistence.Repositories
 				.Where(a => a.AttendeeId == userId && a.Coop.DateTime > DateTime.Now) // get attendances for future co-op sessions only
 				.ToList(); // .ToList() = immediately execute query
 		}
+
+		/// <summary>
+		/// Add an attendance.
+		/// </summary>
+		/// <param name="attendance">The attendance to add.</param>
+		public void Add(Attendance attendance)
+		{
+			_context.Attendances.Add(attendance);
+		}
+
+		/// <summary>
+		/// Remove an attendance.
+		/// </summary>
+		/// <param name="attendance">The attendance to remove.</param>
+		public void Remove(Attendance attendance)
+		{
+			_context.Attendances.Remove(attendance);
+		}
 	}
 }

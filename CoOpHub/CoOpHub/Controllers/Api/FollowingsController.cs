@@ -1,8 +1,7 @@
-﻿using CoOpHub.Core.Dtos;
+﻿using CoOpHub.Core;
+using CoOpHub.Core.Dtos;
 using CoOpHub.Core.Models;
-using CoOpHub.Persistence;
 using Microsoft.AspNet.Identity;
-using System.Linq;
 using System.Web.Http;
 
 namespace CoOpHub.Controllers.Api
@@ -10,11 +9,12 @@ namespace CoOpHub.Controllers.Api
 	[Authorize]
 	public class FollowingsController : ApiController
 	{
-		private ApplicationDbContext _context;
+		private readonly IUnitOfWork _unitOfWork;
 
-		public FollowingsController()
+		public FollowingsController(IUnitOfWork unitOfWork)
 		{
-			_context = new ApplicationDbContext();
+			// Dependency Inversion - no reliance on entity framework !!
+			_unitOfWork = unitOfWork;
 		}
 
 		[HttpPost]
@@ -22,20 +22,21 @@ namespace CoOpHub.Controllers.Api
 		{
 			var userId = User.Identity.GetUserId();
 
-			// Check if following already exists in db
-			if (_context.Followings.Any(f => f.FollowerId == userId && f.FolloweeId == dto.FolloweeId))
+			// Check if following already exists in db, before adding new
+			var following = _unitOfWork.Followings.GetFollowing(userId, dto.FolloweeId);
+			if (following != null)
 			{
 				return BadRequest("Following already exists.");
 			}
 
-			var following = new Following
+			following = new Following
 			{
 				FollowerId = userId,
 				FolloweeId = dto.FolloweeId
 			};
 
-			_context.Followings.Add(following);
-			_context.SaveChanges();
+			_unitOfWork.Followings.Add(following);
+			_unitOfWork.Complete();
 
 			return Ok();
 		}
@@ -45,9 +46,8 @@ namespace CoOpHub.Controllers.Api
 		{
 			var userId = User.Identity.GetUserId();
 
-			// Get the following for the specified artist
-			var following = _context.Followings
-				.SingleOrDefault(f => f.FollowerId == userId && f.FolloweeId == dto.FolloweeId);
+			// Get the following for the specified host
+			var following = _unitOfWork.Followings.GetFollowing(userId, dto.FolloweeId);
 
 			// Check if following exists
 			if (following == null)
@@ -55,9 +55,8 @@ namespace CoOpHub.Controllers.Api
 				return NotFound();
 			}
 
-			// Remove the attendance entity & save changes
-			_context.Followings.Remove(following);
-			_context.SaveChanges();
+			_unitOfWork.Followings.Remove(following);
+			_unitOfWork.Complete();
 
 			// Return ok with id of the following in the response
 			return Ok(dto.FolloweeId);

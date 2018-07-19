@@ -1,41 +1,34 @@
 ﻿using AutoMapper;
+using CoOpHub.Core;
 using CoOpHub.Core.Dtos;
 using CoOpHub.Core.Models;
-using CoOpHub.Persistence;
 using Microsoft.AspNet.Identity;
 using System.Collections.Generic;
-using System.Data.Entity;
 using System.Linq;
 using System.Web.Http;
+using WebGrease.Css.Extensions;
 
 namespace CoOpHub.Controllers.Api
 {
 	[Authorize]
 	public class NotificationsController : ApiController
 	{
-		private ApplicationDbContext _context;
+		private readonly IUnitOfWork _unitOfWork;
 
-		public NotificationsController()
+		public NotificationsController(IUnitOfWork unitOfWork)
 		{
-			_context = new ApplicationDbContext();
+			// Dependency Inversion - no reliance on entity framework !!
+			_unitOfWork = unitOfWork;
 		}
 
 		public IEnumerable<NotificationDto> GetNewNotifications()
 		{
-			// Get list of user notifications ...
+			// Get list of user notifications for the current user ...
 			var userId = User.Identity.GetUserId();
-			var notifications = _context.UserNotifications
-				.Where(un => un.UserId == userId && !un.IsRead) // ... for currently logged in user that haven't been read yet
-				.Select(un => un.Notification) // ... select the actual notification that has the details 
-				.Include(n => n.Coop.Host) // ... eager load the Host that goes with this notification
-				.Include(n => n.Coop.Game) // ... eager load the Game that goes with this notification
-				.Include(n => n.OriginalGame) // ... eager load the OriginalGame that goes with this notification
-				.ToList();
+			var notifications = _unitOfWork.Notifications.GetNewNotificationsFor(userId);
 
 			// Using AutoMapper to map Notification to NotificationDto 
 			return notifications.Select(Mapper.Map<Notification, NotificationDto>);
-
-			//return notifications;
 
 			// Manual mapping:
 			//var notifsDto = notifications.Select(n => new NotificationDto()
@@ -86,15 +79,12 @@ namespace CoOpHub.Controllers.Api
 		{
 			// Get list of user notifications ...
 			var userId = User.Identity.GetUserId();
-			var notifications = _context.UserNotifications
-				.Where(un => un.UserId == userId && !un.IsRead) // ... for currently logged in user that haven't been read yet
-				.ToList();
+			var notifications = _unitOfWork.UserNotifications.GetUserNotificationsFor(userId);
 
 			// Mark user notifications as having been read
 			notifications.ForEach(n => n.Read());
 
-			// Save changes
-			_context.SaveChanges();
+			_unitOfWork.Complete();
 
 			return Ok();
 		}

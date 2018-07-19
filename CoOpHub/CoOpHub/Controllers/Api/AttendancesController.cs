@@ -1,8 +1,7 @@
-﻿using CoOpHub.Core.Dtos;
+﻿using CoOpHub.Core;
+using CoOpHub.Core.Dtos;
 using CoOpHub.Core.Models;
-using CoOpHub.Persistence;
 using Microsoft.AspNet.Identity;
-using System.Linq;
 using System.Web.Http;
 
 namespace CoOpHub.Controllers.Api
@@ -10,11 +9,12 @@ namespace CoOpHub.Controllers.Api
 	[Authorize]
 	public class AttendancesController : ApiController
 	{
-		private ApplicationDbContext _context;
+		private readonly IUnitOfWork _unitOfWork;
 
-		public AttendancesController()
+		public AttendancesController(IUnitOfWork unitOfWork)
 		{
-			_context = new ApplicationDbContext();
+			// Dependency Inversion - no reliance on entity framework !!
+			_unitOfWork = unitOfWork;
 		}
 
 		[HttpPost]
@@ -22,20 +22,21 @@ namespace CoOpHub.Controllers.Api
 		{
 			var userId = User.Identity.GetUserId();
 
-			// Check if attendance already exists in db
-			if (_context.Attendances.Any(a => a.AttendeeId == userId && a.CoopId == dto.CoopId))
+			// Check if attendance already exists in db, before creating new
+			var attendance = _unitOfWork.Attendances.GetAttendance(dto.CoopId, userId);
+			if (attendance != null)
 			{
 				return BadRequest("The attendance already exists.");
 			}
 
-			var attendance = new Attendance
+			attendance = new Attendance
 			{
 				CoopId = dto.CoopId,
 				AttendeeId = userId
 			};
 
-			_context.Attendances.Add(attendance);
-			_context.SaveChanges();
+			_unitOfWork.Attendances.Add(attendance);
+			_unitOfWork.Complete();
 
 			return Ok();
 		}
@@ -46,8 +47,7 @@ namespace CoOpHub.Controllers.Api
 			var userId = User.Identity.GetUserId();
 
 			// Get the attendance for the specified co-op session Id
-			var attendance = _context.Attendances
-				.SingleOrDefault(a => a.CoopId == id && a.AttendeeId == userId);
+			var attendance = _unitOfWork.Attendances.GetAttendance(id, userId);
 
 			// Check if attendance exists
 			if (attendance == null)
@@ -55,9 +55,8 @@ namespace CoOpHub.Controllers.Api
 				return NotFound();
 			}
 
-			// Remove the attendance entity & save changes
-			_context.Attendances.Remove(attendance);
-			_context.SaveChanges();
+			_unitOfWork.Attendances.Remove(attendance);
+			_unitOfWork.Complete();
 
 			// Return ok with id of the attendance in the response
 			return Ok(id);
