@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 
 namespace CoOpHub.Core.Models
@@ -9,23 +8,12 @@ namespace CoOpHub.Core.Models
 	public class Coop
 	{
 		public int Id { get; set; }
-
 		public bool IsCanceled { get; private set; }
-
 		public ApplicationUser Host { get; set; }
-
-		[Required]
 		public string HostId { get; set; }		/* "navigation" property */
-
 		public DateTime DateTime { get; set; }
-
-		[Required]
-		[StringLength(255)]
 		public string Venue { get; set; }
-
 		public Game Game { get; set; }
-
-		[Required]
 		public int GameId { get; set; }			/* "navigation" property */
 
 		// Navigation properties:

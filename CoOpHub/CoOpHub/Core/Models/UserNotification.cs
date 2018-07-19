@@ -1,6 +1,4 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CoOpHub.Core.Models
 {
@@ -10,12 +8,7 @@ namespace CoOpHub.Core.Models
 	public class UserNotification
 	{
 		// Composite primary key definition:
-		[Key]
-		[Column(Order = 1)]
 		public string UserId { get; private set; }
-
-		[Key]
-		[Column(Order = 2)]
 		public int NotificationId { get; private set; }
 
 		// Navigation properties to navigate to related objects:

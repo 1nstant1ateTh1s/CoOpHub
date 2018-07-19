@@ -1,5 +1,4 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations;
 
 namespace CoOpHub.Core.Models
 {
@@ -13,8 +12,6 @@ namespace CoOpHub.Core.Models
 		public Game OriginalGame { get; set; }
 		public int? OriginalGameId { get; set; } /* "navigation" property */
 		public Coop Coop { get; set; }
-
-		[Required]
 		public int CoopId { get; private set; } /* "navigation" property */
 
 		/// <summary>

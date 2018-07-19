@@ -1,13 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace CoOpHub.Core.Models
+﻿namespace CoOpHub.Core.Models
 {
 	public class Genre
 	{
 		public int Id { get; set; }
-
-		[Required]
-		[StringLength(255)]
 		public string Name { get; set; }
 	}
 }
