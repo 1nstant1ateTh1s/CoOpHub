@@ -20,7 +20,7 @@ namespace CoOpHub.Tests.Controllers.Api
 		[TestInitialize]
 		public void TestInitialize()
 		{
-			// Create mock repository
+			// Create mock repository - will be empty unless setup in test methods below
 			_mockRepository = new Mock<ICoopRepository>();
 
 			// Create a moq unit of work
@@ -48,56 +48,56 @@ namespace CoOpHub.Tests.Controllers.Api
 		[TestMethod]
 		public void Cancel_NoCoopWithGivenIdExists_ShouldReturnNotFound()
 		{
-			// Action
+			// Action - attempt to cancel a co-op session that does not yet exist
 			var result = _controller.Cancel(1);
 
-			// Assertion
+			// Assert - co-op session not found
 			result.Should().BeOfType<NotFoundResult>();
 		}
 
 		[TestMethod]
 		public void Cancel_CoopIsCanceled_ShouldReturnNotFound()
 		{
-			// Setup
+			// Setup - add a canceled co-op session to repository
 			var coop = new Coop();
 			coop.Cancel();
 
 			_mockRepository.Setup(r => r.GetCoopWithAttendees(1)).Returns(coop);
 
-			// Action
+			// Action - attempt to cancel a co-op session that has already been canceled
 			var result = _controller.Cancel(1);
 
-			// Assertion
+			// Assert - co-op session not found
 			result.Should().BeOfType<NotFoundResult>();
 		}
 
 		[TestMethod]
 		public void Cancel_UserCancelingAnotherUsersCoop_ShouldReturnUnauthorized()
 		{
-			// Setup
+			// Setup - add a co-op session that belongs to a different user
 			var coop = new Coop { HostId = _userId + "-" };
 
 			_mockRepository.Setup(r => r.GetCoopWithAttendees(1)).Returns(coop);
 
-			// Action
+			// Action - attempt to cancel another user's co-op session
 			var result = _controller.Cancel(1);
 
-			// Assertion
+			// Assert - not authorized to cancel
 			result.Should().BeOfType<UnauthorizedResult>();
 		}
 
 		[TestMethod]
 		public void Cancel_ValidRequest_ShouldReturnOk()
 		{
-			// Setup
+			// Setup - add a co-op session to repository for the current user
 			var coop = new Coop { HostId = _userId };
 
 			_mockRepository.Setup(r => r.GetCoopWithAttendees(1)).Returns(coop);
 
-			// Action
+			// Action - make a valid cancel request on a co-op session
 			var result = _controller.Cancel(1);
 
-			// Assertion
+			// Assert - co-op session canceled ok
 			result.Should().BeOfType<OkResult>();
 
 		}
