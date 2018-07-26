@@ -5,7 +5,7 @@ using System.Data.Entity;
 
 namespace CoOpHub.Persistence
 {
-	public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
+	public class ApplicationDbContext : IdentityDbContext<ApplicationUser>, IApplicationDbContext
 	{
 		public DbSet<Coop> Coops { get; set; }
 		public DbSet<Game> Games { get; set; }

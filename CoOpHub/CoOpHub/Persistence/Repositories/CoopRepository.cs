@@ -9,9 +9,9 @@ namespace CoOpHub.Persistence.Repositories
 {
 	public class CoopRepository : ICoopRepository
 	{
-		private readonly ApplicationDbContext _context;
+		private readonly IApplicationDbContext _context;
 
-		public CoopRepository(ApplicationDbContext context)
+		public CoopRepository(IApplicationDbContext context)
 		{
 			_context = context;
 		}
