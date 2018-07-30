@@ -95,7 +95,7 @@ namespace CoOpHub.Persistence.Repositories
 		public IEnumerable<Coop> GetCoopsUserAttending(string userId)
 		{
 			return _context.Attendances
-				.Where(a => a.AttendeeId == userId)
+				.Where(a => a.AttendeeId == userId && a.Coop.DateTime > DateTime.Now)
 				.Select(a => a.Coop)
 				.Include(c => c.Host)   // include the related "Host" object
 				.Include(c => c.Game)   // include the related "Game" object
