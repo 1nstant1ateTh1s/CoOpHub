@@ -1,8 +1,8 @@
+using System.Data.Entity.Migrations;
+
 namespace CoOpHub.Migrations
 {
-	using System.Data.Entity.Migrations;
-
-	internal sealed class Configuration : DbMigrationsConfiguration<CoOpHub.Persistence.ApplicationDbContext>
+	public sealed class Configuration : DbMigrationsConfiguration<CoOpHub.Persistence.ApplicationDbContext>
 	{
 		public Configuration()
 		{
