@@ -1,13 +1,11 @@
-﻿using NUnit.Framework;
-
-namespace CoOpHub.IntegrationTests
+﻿namespace CoOpHub.IntegrationTests
 {
-	[TestFixture]
-	public class UnitTest1
-	{
-		[Test]
-		public void TestMethod1()
-		{
-		}
-	}
+	//[TestFixture]
+	//public class UnitTest1
+	//{
+	//	[Test]
+	//	public void TestMethod1()
+	//	{
+	//	}
+	//}
 }
