@@ -1,17 +1,20 @@
-﻿namespace CoOpHub.IntegrationTests
-{
-	//[SetUpFixture]
-	//class GlobalSetUp
-	//{
-	//	[SetUp]
-	//	public void SetUp()
-	//	{
-	//		// Get Code-First configurations to bring integration testing database to latest version
-	//		var configuration = new CoOpHub.Migrations.Configuration();
+﻿using NUnit.Framework;
+using System.Data.Entity.Migrations;
 
-	//		// Migrate integration testing database to latest version
-	//		var migrator = new DbMigrator(configuration);
-	//		migrator.Update();
-	//	}
-	//}
+namespace CoOpHub.IntegrationTests
+{
+	[SetUpFixture]
+	class GlobalSetUp
+	{
+		[SetUp]
+		public void SetUp()
+		{
+			// Get Code-First configurations to bring integration testing database to latest version
+			var configuration = new CoOpHub.Migrations.Configuration();
+
+			// Migrate integration testing database to latest version
+			var migrator = new DbMigrator(configuration);
+			migrator.Update();
+		}
+	}
 }
