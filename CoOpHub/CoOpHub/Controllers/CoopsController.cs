@@ -186,7 +186,7 @@ namespace CoOpHub.Controllers
 		}
 
 		[Authorize]
-		public ActionResult Mine()
+		public ViewResult Mine()
 		{
 			// Get list of upcoming co-op sessions the currently logged in user is hosting, that have not been cancelled
 			var userId = User.Identity.GetUserId();
