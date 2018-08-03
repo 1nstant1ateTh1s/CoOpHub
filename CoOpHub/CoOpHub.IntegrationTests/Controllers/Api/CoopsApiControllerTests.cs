@@ -30,7 +30,7 @@ namespace CoOpHub.IntegrationTests.Controllers.Api
 		}
 
 		[Test, Isolated] // use 'Isolated' attr. because this test changes the state of the db & we want to make sure the changes are rolled back.
-		public void Cancel_WhenCalled_ShouldCancelTheGivenGig()
+		public void Cancel_WhenCalled_ShouldCancelTheGivenCoop()
 		{
 			// Arrange
 			// Mock the current user (w/ extension method) **NOTE - TODO: move the controller extension methods to a separate, shared library so all test projects can reference a single .dll
