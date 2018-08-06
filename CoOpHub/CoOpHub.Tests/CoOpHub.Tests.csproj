@@ -85,6 +85,8 @@
   <ItemGroup>
     <Compile Include="Controllers\Api\AttendancesControllerTests.cs" />
     <Compile Include="Controllers\Api\CoopsControllerTests.cs" />
+    <Compile Include="Domain\Models\ApplicationUserTests.cs" />
+    <Compile Include="Domain\Models\NotificationTests.cs" />
     <Compile Include="Extensions\ApiControllerExtensions.cs" />
     <Compile Include="Extensions\MockDbSetExtensions.cs" />
     <Compile Include="Persistence\Repositories\CoopRepositoryTests.cs" />
