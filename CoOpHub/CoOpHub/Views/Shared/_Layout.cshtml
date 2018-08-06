@@ -52,31 +52,33 @@
 	<script type="text/x-template" id="notifications-template">
 		<ul class="notifications">
 			<!-- Actual markup for notifications: -->
+			<!-- notification.type == 1: render CoopCanceled notifications -->
+			<!-- notification.type == 2: render CoopUpdated notifications -->
 			<%
 				_.each(notifications, function (notification) {
-					if (notification.type == 1) { %> <!-- render CoopCanceled notifications -->
+					if (notification.type == 1) { %>
 						<li><span class="highlight"><%= notification.coop.host.name %></span> has canceled the co-op at <%= notification.coop.venue %> at <%= moment(notification.coop.dateTime).format("D MMM HH:mm") %>.</li>
 					<% }
-					if (notification.type == 2) { <!-- render CoopUpdated notifications -->
+					if (notification.type == 2) {
 						var changes = [],
 							originalValues = [],
 							newValues = [];
 
-						<!-- Has co-op venue changed? -->
+						@* Has co-op venue changed? *@
 						if (notification.originalVenue != notification.coop.venue) {
 							changes.push('venue');
 							originalValues.push(notification.originalVenue);
 							newValues.push(notification.coop.venue);
 						}
 
-						<!-- Has co-op date/time changed? -->
+						@* Has co-op date/time changed? *@
 						if (notification.originalDateTime != notification.coop.dateTime) {
 							changes.push('date/time');
 							originalValues.push(moment(notification.originalDateTime).format("D MMM HH:mm"));
 							newValues.push(moment(notification.coop.dateTime).format("D MMM HH:mm"));
 						}
 
-						<!-- Has co-op game changed? -->
+						@* Has co-op game changed? *@
 						if (notification.originalGame.id != notification.coop.game.id) {
 							changes.push('game');
 							originalValues.push(notification.originalGame.name);
